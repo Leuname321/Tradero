@@ -3,333 +3,1372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Provportal & Kahoot Live</title>
+    <title>Provportal - Kahoot Live Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --kahoot-purple: #46178f;
-            --kahoot-blue: #1368ce;
-            --kahoot-red: #e21b3c;
-            --kahoot-yellow: #d89e00;
-            --kahoot-green: #26890c;
-            --bg-light: #f4f7f6;
+            --bg-light: #f3f4f6;
+            --card-white: #ffffff;
+            --card-border: #e5e7eb;
+            --brand-green: #22c55e;
+            --brand-green-hover: #16a34a;
+            --brand-dark-green: #15803d;
+            --accent-amber: #f59e0b;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
         }
+
+        body[data-theme="sunset"] {
+            --bg-light: #fffbeb; --brand-green: #f59e0b; --brand-green-hover: #d97706; --brand-dark-green: #b45309;
+        }
+        body[data-theme="mint"] {
+            --bg-light: #f0fdf4; --brand-green: #10b981; --brand-green-hover: #059669; --brand-dark-green: #047857;
+        }
+        body[data-theme="dark"] {
+            --bg-light: #111827; --card-white: #1f2937; --card-border: #374151; --brand-green: #3b82f6; --brand-green-hover: #2563eb; --brand-dark-green: #1d4ed8; --text-main: #f9fafb; --text-muted: #9ca3af;
+        }
+        body[data-theme="cyberpunk"] {
+            --bg-light: #0f172a; --card-white: #1e293b; --card-border: #334155; --brand-green: #ec4899; --brand-green-hover: #db2777; --brand-dark-green: #be185d; --accent-amber: #06b6d4; --text-main: #f8fafc; --text-muted: #94a3b8;
+        }
+        body[data-theme="purple"] {
+            --bg-light: #faf5ff; --card-white: #ffffff; --card-border: #e9d5ff; --brand-green: #8b5cf6; --brand-green-hover: #7c3aed; --brand-dark-green: #6d28d9; --accent-amber: #ec4899; --text-main: #3b0764; --text-muted: #6b7280;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
         body {
-            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--kahoot-purple);
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--bg-light);
+            color: var(--text-main);
             min-height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: #ffffff;
-            color: #333333;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        h1, h2 {
-            color: var(--kahoot-purple);
-            text-align: center;
-        }
-        .screen { display: none; }
-        .screen.active { display: block; }
-
-        /* Dashboard Grid för de 6 grundproven */
-        .portal-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .quiz-card {
-            background: #f9f9f9;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        .quiz-card:hover {
-            border-color: var(--kahoot-blue);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .quiz-card h3 {
-            margin-top: 0;
-            color: var(--kahoot-blue);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Kahoot Style Buttons */
-        .choices-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
+        header {
+            background: var(--brand-green);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-bottom: 4px solid var(--brand-dark-green);
         }
-        .choice-btn {
-            padding: 20px;
-            font-size: 16px;
-            font-weight: bold;
+
+        .logo { font-weight: 800; font-size: 1.3rem; color: #ffffff; cursor: pointer; display: flex; align-items: center; gap: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .user-nav { display: flex; align-items: center; gap: 14px; font-size: 0.9rem; color: #ffffff; font-weight: 700; }
+        .user-name { color: #fef08a; font-weight: 800; }
+
+        .header-avatar-container {
+            width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #ffffff; border: 2px solid var(--brand-dark-green); font-size: 1.2rem; box-shadow: var(--shadow);
+        }
+        .header-avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .role-badge-owner { background: var(--accent-amber); color: #ffffff; border: 2px solid #d97706; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .role-badge-teacher { background: #15803d; color: #ffffff; border: 2px solid #0f5132; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .role-badge-student { background: var(--brand-green); color: #ffffff; border: 2px solid var(--brand-dark-green); padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+
+        .btn-sm { background: var(--card-white); border: 2px solid var(--card-border); color: var(--text-main); padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow); }
+        .btn-sm:hover { filter: brightness(0.95); transform: translateY(-1px); }
+
+        .btn-primary { background: var(--brand-green); color: white; border: 2px solid var(--brand-dark-green); padding: 12px 24px; border-radius: 14px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow); font-size: 1rem; }
+        .btn-primary:hover { background: var(--brand-green-hover); transform: translateY(-2px); }
+
+        .btn-game { background: #8b5cf6; color: white; border: 2px solid #6d28d9; padding: 14px 24px; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 1.1rem; box-shadow: var(--shadow); }
+        .btn-game:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; width: 100%; }
+
+        .auth-card {
+            background: var(--card-white); border: 2px solid var(--card-border);
+            border-radius: var(--radius); padding: 36px; max-width: 480px; margin: 40px auto; text-align: left; box-shadow: var(--shadow-lg);
+        }
+        .form-group { text-align: left; margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; }
+        .form-input, select, textarea {
+            width: 100%; background: var(--bg-light); border: 2px solid var(--card-border);
+            border-radius: 12px; padding: 12px; color: var(--text-main); outline: none; font-weight: 600;
+        }
+        .form-input:focus, select:focus, textarea:focus { border-color: var(--brand-green); background: var(--card-white); }
+
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 12px 20px; background: var(--card-white); border: 2px solid var(--card-border); border-radius: 14px;
+            color: var(--text-muted); font-weight: 800; font-size: 0.9rem; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
+        }
+        .tab-btn.active { border-color: var(--brand-green); color: var(--brand-dark-green); background: var(--bg-light); transform: translateY(-2px); }
+
+        .filter-bar { display: flex; gap: 12px; margin-bottom: 24px; background: var(--card-white); padding: 16px; border-radius: var(--radius); border: 2px solid var(--card-border); box-shadow: var(--shadow); }
+        .section-header { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--card-border); }
+
+        .empty-text { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; font-weight: 600; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+        .exam-card {
+            background: var(--card-white); border: 2px solid var(--card-border); border-radius: var(--radius); padding: 24px;
+            display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); transition: transform 0.2s, border-color 0.2s;
+        }
+        .exam-card:hover { border-color: var(--brand-green); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+        .card-top { display: flex; justify-content: space-between; align-items: center; }
+        .subject-tag { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .grade-badge { background: var(--bg-light); color: var(--brand-dark-green); border: 2px solid var(--card-border); padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; }
+
+        .exam-title { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin-top: 4px; }
+        .exam-meta { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+
+        .btn-start { background: var(--brand-green); color: #ffffff; border: 2px solid var(--brand-dark-green); padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; width: 100%; text-align: center; box-shadow: var(--shadow); }
+        .btn-start:hover { filter: brightness(1.1); }
+
+        .builder-section { background: var(--card-white); border: 2px solid var(--card-border); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow); }
+        .question-builder-item { background: var(--bg-light); border: 2px solid var(--card-border); border-radius: 14px; padding: 20px; margin-top: 16px; }
+
+        .ai-box { background: var(--bg-light); border: 2px dashed var(--brand-green); border-radius: 14px; padding: 20px; margin-bottom: 24px; }
+
+        .question-viewport { background: var(--card-white); border: 2px solid var(--card-border); border-radius: var(--radius); padding: 32px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; box-shadow: var(--shadow-lg); }
+        .media-box { display: flex; flex-direction: column; gap: 12px; }
+        .image-wrapper { width: 100%; height: 280px; border-radius: var(--radius); overflow: hidden; border: 2px solid var(--card-border); position: relative; background: var(--bg-light); }
+        .image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .options-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+        .option-card { background: var(--bg-light); border: 2px solid var(--card-border); border-radius: 12px; padding: 14px; cursor: pointer; font-size: 0.95rem; font-weight: 700; color: var(--text-main); box-shadow: var(--shadow); }
+        .option-card.selected { border-color: var(--brand-green); background: var(--card-white); color: var(--brand-dark-green); }
+
+        /* KAHOOT SPELARENA STYLING */
+        .kahoot-arena { background: #46178f; border: 4px solid #310d69; border-radius: var(--radius); padding: 40px; text-align: center; color: white; box-shadow: var(--shadow-lg); min-height: 500px; display: flex; flex-direction: column; justify-content: space-between; }
+        .kahoot-timer-circle { width: 60px; height: 60px; background: white; color: #46178f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto; box-shadow: var(--shadow); }
+        .kahoot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 800px; margin: 20px auto 0 auto; width: 100%; }
+        
+        .kahoot-btn-0 { background: #e21b3c; color: white; border: none; border-radius: 12px; padding: 24px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; justify-content: center; }
+        .kahoot-btn-1 { background: #1368ce; color: white; border: none; border-radius: 12px; padding: 24px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; justify-content: center; }
+        .kahoot-btn-2 { background: #d89e00; color: white; border: none; border-radius: 12px; padding: 24px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; justify-content: center; }
+        .kahoot-btn-3 { background: #26890c; color: white; border: none; border-radius: 12px; padding: 24px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; justify-content: center; }
+        .kahoot-btn-0:hover, .kahoot-btn-1:hover, .kahoot-btn-2:hover, .kahoot-btn-3:hover { filter: brightness(1.15); transform: scale(1.02); }
+
+        #kahoot-top-banner {
+            display: none;
+            background: linear-gradient(135deg, #2b0957 0%, #46178f 100%);
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: filter 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 4px solid #ffd700;
             text-align: left;
         }
-        .choice-btn:hover { filter: brightness(1.1); }
-        .choice-0 { background-color: var(--kahoot-red); }
-        .choice-1 { background-color: var(--kahoot-blue); }
-        .choice-2 { background-color: var(--kahoot-yellow); }
-        .choice-3 { background-color: var(--kahoot-green); }
-
-        .btn {
-            background-color: var(--kahoot-blue);
+        .kahoot-lb-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 1.05rem;
+        }
+        .kahoot-lb-card.highlight {
+            background: rgba(255, 215, 0, 0.25);
+            border-color: #ffd700;
+        }
+        .kahoot-next-btn {
+            background: #22c55e;
             color: white;
             border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 800;
             cursor: pointer;
-            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             width: 100%;
+            margin-top: 16px;
+            transition: transform 0.2s;
         }
-        .btn:hover { filter: brightness(1.1); }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
+        .kahoot-next-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
         }
-        .question-box {
-            background: #f2f2f2;
-            padding: 20px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #222;
-        }
-        .class-section {
-            background: #eef2f7;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 25px;
-        }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--card-white); border: 3px solid var(--brand-green); border-radius: var(--radius); padding: 36px; max-width: 500px; width: 90%; text-align: left; box-shadow: var(--shadow-lg); max-height: 90vh; overflow-y: auto; }
+
+        .avatar-grid { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
+        .avatar-option { font-size: 1.5rem; background: var(--bg-light); border: 2px solid var(--card-border); border-radius: 12px; padding: 8px 12px; cursor: pointer; box-shadow: var(--shadow); }
+        .avatar-option.selected { border-color: var(--brand-green); background: var(--card-white); }
+
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 16px; text-align: left; font-size: 0.95rem; }
+        .leaderboard-table th, .leaderboard-table td { padding: 12px 14px; border-bottom: 2px solid var(--card-border); font-weight: 700; }
+        .leaderboard-table th { color: var(--brand-dark-green); background: var(--bg-light); }
+
+        @media (max-width: 850px) { .question-viewport { grid-template-columns: 1fr; } .kahoot-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- PORTAL DASHBOARD (Startskärm med 6 grundprov & Klass) -->
-    <div id="portalScreen" class="screen active">
-        <h1>Provportal & Kahoot Live</h1>
-        <p style="text-align: center; color: #666;">Välj ett av de 6 grundproven nedan eller gå till din klassfunktion!</p>
+    <header>
+        <div class="logo" onclick="showDashboard()">🟣 Provportal & Kahoot-arena</div>
+        <div class="user-nav" id="user-nav">
+            <span style="display:flex; align-items:center; gap:10px;">
+                <div class="header-avatar-container" id="header-avatar-box">👑</div>
+                <span>Inloggad: <span class="user-name" id="user-display-name">Emanuel</span></span>
+                <span id="header-role-badge" class="role-badge-owner">Owner</span>
+                <span id="user-coins-display" style="color:#fef08a; font-weight:800;">🪙 50 mynt</span>
+            </span>
+            <button class="btn-sm" onclick="openSettingsModal()">⚙️ Inställningar</button>
+            <button class="btn-sm" onclick="logout()">Logga ut</button>
+        </div>
+    </header>
+
+    <div class="container">
         
-        <div style="margin-bottom: 20px;">
-            <label for="studentName" style="font-weight: bold;">Ditt namn:</label>
-            <input type="text" id="studentName" placeholder="Skriv ditt namn här...">
+        <!-- INLOGGNING / REGISTRERING -->
+        <div id="view-auth" class="auth-card">
+            <h2 id="auth-title" style="margin-bottom: 8px; color:var(--brand-dark-green);">Logga in / Skapa konto</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 20px; font-weight:600;">Logga in med din Gmail. Admin-epost blir automatiskt Owner, övriga kan välja roll och klass!</p>
+            
+            <div class="form-group"><label>Ditt namn</label><input type="text" id="auth-username" class="form-input" placeholder="t.ex. Anna Andersson" value="Emanuel"></div>
+            <div class="form-group"><label>Din Gmail</label><input type="email" id="auth-email" class="form-input" placeholder="namn@gmail.com" value="emanuel.b.nilsson@gmail.com"></div>
+            
+            <div id="role-select-group" class="form-group" style="display:none;">
+                <label>Välj roll</label>
+                <select id="auth-role" class="form-input">
+                    <option value="student">Elev</option>
+                    <option value="teacher">Lärare</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Klassalternativ</label>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <button type="button" class="btn-sm" id="btn-mode-join" onclick="setAuthMode('join')" style="flex:1; background:var(--card-white); border-color:var(--brand-green);">Gå med i befintlig klass</button>
+                    <button type="button" class="btn-sm" id="btn-mode-create" onclick="setAuthMode('create')" style="flex:1;">Skapa ny klass</button>
+                </div>
+            </div>
+
+            <div id="auth-class-fields">
+                <div class="form-group"><label>Klasskod (t.ex. 8A)</label><input type="text" id="auth-classcode" class="form-input" value="8A"></div>
+                <div class="form-group" id="group-class-pwd" style="display:none;"><label>Klassens lösenord</label><input type="password" id="auth-classpwd" class="form-input" placeholder="Lösenord för att skapa klassen..."></div>
+            </div>
+
+            <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="handleAuth()">Logga in / Starta</button>
         </div>
 
-        <h2>De 6 Grundproven</h2>
-        <div class="portal-grid">
-            <div class="quiz-card" onclick="startSelectedQuiz(0)">
-                <h3>1. Fysik</h3>
-                <p>Elektricitet & Magnetism</p>
+        <!-- DASHBOARD -->
+        <div id="view-dashboard" style="display:none;">
+            <div class="nav-tabs" id="main-nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('exams')">📚 Utforska Prov</button>
+                <button class="tab-btn" onclick="switchTab('class-category')">🏫 Klassens Prov & Kahoot</button>
+                <button class="tab-btn" onclick="switchTab('members')">👥 Klassmedlemmar</button>
+                <button class="tab-btn" onclick="switchTab('my-exams')">📁 Egna & Gamla Prov</button>
+                <button class="tab-btn" id="tab-btn-create" onclick="switchTab('create')">➕ Skapa Prov</button>
+                <button class="tab-btn" onclick="switchTab('results')">📊 Statistik</button>
+                <button class="tab-btn" onclick="switchTab('leaderboard')">🏆 Topplista</button>
+                <button class="tab-btn" onclick="openSettingsModal()">⚙️ Inställningar</button>
             </div>
-            <div class="quiz-card" onclick="startSelectedQuiz(1)">
-                <h3>2. Kemi</h3>
-                <p>Atomer, molekyler & periodiska systemet</p>
+
+            <!-- TAB 1 -->
+            <div id="tab-exams">
+                <div class="filter-bar">
+                    <input type="text" id="search-exam-input" class="form-input" style="flex:1;" placeholder="🔍 Sök prov på titel eller ämne..." oninput="renderExamsList()">
+                </div>
+                <div class="section-header"><span>🔍</span> Standardprov (Utforska alla färdiga prov)</div>
+                <div id="default-exams-grid" class="grid"></div>
             </div>
-            <div class="quiz-card" onclick="startSelectedQuiz(2)">
-                <h3>3. Biologi</h3>
-                <p>Ekologi & evolution</p>
+
+            <!-- TAB 2 -->
+            <div id="tab-class-category" style="display: none;">
+                <div class="builder-section">
+                    <h2 style="color:var(--brand-dark-green); margin-bottom:8px;">🏫 Klassens Prov & Kahoot-spelares</h2>
+                    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px; font-weight:600;">Välj ett prov och kör ett live Kahoot-spel med tidtagning och färgade svarsknappar!</p>
+                    
+                    <div style="background:var(--bg-light); border:2px solid var(--card-border); border-radius:14px; padding:20px; margin-bottom:24px;">
+                        <h3 style="color:var(--brand-dark-green); font-size:1rem; margin-bottom:8px;">1. Välj Prov</h3>
+                        <select id="select-game-exam" class="form-input" style="margin-bottom:16px;"></select>
+
+                        <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+                            <button class="btn-game" onclick="hostKahootGame()" style="flex:1;">🎮 Starta Kahoot Live</button>
+                            <input type="text" id="join-game-code" class="form-input" placeholder="Spelkod..." style="width:130px;">
+                            <button class="btn-primary" onclick="joinKahootWithCode()">Gå med</button>
+                        </div>
+                    </div>
+
+                    <h3 style="color:var(--text-main); font-size:1rem; margin-bottom:12px;">Prov tilldelade till Klassens Prov</h3>
+                    <div id="class-assigned-exams-grid" class="grid"><div class="empty-text">Inga prov tilldelade till klassen än.</div></div>
+
+                    <div style="margin-top: 32px; border-top: 2px solid var(--card-border); padding-top: 20px;">
+                        <h3 style="color: var(--accent-amber); font-size: 1.1rem; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">🔥 Klassens Poängtopplista (Kahoot-resultat)</h3>
+                        <div id="class-points-leaderboard-container"></div>
+                    </div>
+                </div>
             </div>
-            <div class="quiz-card" onclick="startSelectedQuiz(3)">
-                <h3>4. Matematik</h3>
-                <p>Algebra & procent</p>
+
+            <!-- TAB 3 -->
+            <div id="tab-members" style="display: none;">
+                <div class="builder-section">
+                    <h2 style="color:var(--brand-dark-green); margin-bottom:8px;">👥 Klassmedlemmar i klass <span id="members-class-code-lbl">8A</span></h2>
+                    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px; font-weight:600;">Här ser du alla användare som är registrerade i den här klassen.</p>
+                    <div id="class-members-container"></div>
+                </div>
             </div>
-            <div class="quiz-card" onclick="startSelectedQuiz(4)">
-                <h3>5. Historia</h3>
-                <p>Världskrig och samhällsförändringar</p>
+
+            <!-- TAB 4 -->
+            <div id="tab-my-exams" style="display: none;">
+                <div class="builder-section">
+                    <h2 style="color:var(--brand-dark-green); margin-bottom:8px;">📁 Egna & Gamla Prov</h2>
+                    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px; font-weight:600;">Här hittar du alla prov du har skapat själv eller sparat tidigare.</p>
+                    <div id="my-saved-exams-grid" class="grid"><div class="empty-text">Inga sparade egna prov ännu.</div></div>
+                </div>
             </div>
-            <div class="quiz-card" onclick="startSelectedQuiz(5)">
-                <h3>6. Geografi</h3>
-                <p>Världsdelar, klimat & naturresurser</p>
+
+            <!-- TAB 5 -->
+            <div id="tab-create" style="display: none;">
+                <div class="ai-box">
+                    <h3 style="color:var(--brand-dark-green); margin-bottom:6px; display:flex; align-items:center; gap:6px;">🤖 AI-Assistent för Provskapande</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px; font-weight:600;">Fyll i ämne och ämnesområde så skapar AI:n färdiga frågor åt dig automatiskt!</p>
+                    <div style="display:grid; grid-template-columns: 2fr 2fr 1fr; gap:12px; margin-bottom:12px;">
+                        <input type="text" id="ai-prompt-subject" class="form-input" placeholder="Ämne (t.ex. Biologi)">
+                        <input type="text" id="ai-prompt-topic" class="form-input" placeholder="Ämnesområde (t.ex. Celldelning)">
+                        <select id="ai-prompt-count" class="form-input">
+                            <option value="3">3 frågor</option>
+                            <option value="5">5 frågor</option>
+                            <option value="10" selected>10 frågor</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="generateExamWithAI()">✨ Generera prov med AI</button>
+                </div>
+
+                <div class="builder-section">
+                    <h2 style="margin-bottom: 16px; color:var(--brand-dark-green);">Skapa Eget Prov</h2>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:12px; margin-bottom:12px;">
+                        <div class="form-group" style="margin-bottom:0;"><label>Provets Titel</label><input type="text" id="new-exam-title" class="form-input" placeholder="t.ex. Kemi prov"></div>
+                        <div class="form-group" style="margin-bottom:0;"><label>Ämne</label><input type="text" id="new-exam-subject" class="form-input" placeholder="t.ex. Kemi"></div>
+                        <div class="form-group" style="margin-bottom:0;"><label>Klass</label><input type="text" id="new-exam-class" class="form-input" value="8A"></div>
+                    </div>
+                    <div style="margin-top: 14px; display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" id="new-exam-publish-class" style="width:20px; height:20px; accent-color:var(--brand-green);">
+                        <label for="new-exam-publish-class" style="color:var(--brand-dark-green); font-weight:800; cursor:pointer;">Publicera till Klassens Prov</label>
+                    </div>
+                </div>
+                
+                <div id="questions-builder-list"></div>
+                
+                <div style="display:flex; gap:12px; margin-top: 20px;">
+                    <button class="btn-sm" onclick="addQuestionToBuilder()">➕ Lägg till fråga</button>
+                    <button class="btn-primary" onclick="saveCustomExam()">💾 Spara Provet</button>
+                </div>
+            </div>
+
+            <!-- TAB 6 -->
+            <div id="tab-results" style="display: none;">
+                <div class="builder-section"><h2 style="color:var(--brand-dark-green);">📊 Statistik & Resultat</h2><div id="results-history-list"></div></div>
+            </div>
+
+            <!-- TAB 7 -->
+            <div id="tab-leaderboard" style="display: none;">
+                <div class="builder-section"><h2 style="color:var(--brand-dark-green);">🏆 Topplista</h2><div id="leaderboard-container"></div></div>
             </div>
         </div>
 
-        <div class="class-section">
-            <h3>Klassfunktion & Egna Prov</h3>
-            <p style="font-size: 14px; color: #555;">Här kan lärare eller elever hantera klassens egna skapade prov.</p>
-            <button class="btn" style="background-color: var(--kahoot-green);" onclick="openClassView()">Gå till Min Klass</button>
+        <!-- PROV-VY -->
+        <div id="view-exam" style="display: none;">
+            <div style="margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
+                <button class="btn-sm" onclick="showDashboard()">⬅️ Avbryt</button>
+                <button class="btn-primary" onclick="gradeCurrentExam()">Lämna in & Rätta</button>
+            </div>
+            <div class="question-viewport">
+                <div class="media-box"><div class="image-wrapper"><img id="q-img" src="" alt="Bild"></div></div>
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                    <h3 id="q-title" style="color:var(--brand-dark-green); font-size:1.2rem;"></h3>
+                    <p id="q-text" style="font-size:0.95rem; line-height:1.5; color:var(--text-main); font-weight:600;"></p>
+                    <div id="dynamic-answer-area"></div>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                <button class="btn-sm" onclick="prevQuestion()">Föregående</button>
+                <span style="color:var(--text-muted); font-size:0.9rem; font-weight:700;">Fråga <span id="current-num">1</span> av <span id="total-num">10</span></span>
+                <button class="btn-sm" onclick="nextQuestion()">Nästa</button>
+            </div>
+        </div>
+
+        <!-- KAHOOT LIVE SPELARENA -->
+        <div id="view-game-arena" style="display: none;">
+            <div style="margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
+                <button class="btn-sm" onclick="showDashboard()">⬅️ Avbryt</button>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <div class="timer-badge" style="background:#e21b3c; color:white; padding:8px 16px; border-radius:20px; font-weight:800;">🟣 KAHOOT LIVE</div>
+                    <div class="timer-badge" style="background:var(--accent-amber); color:white; padding:8px 16px; border-radius:20px; font-weight:800;">🎮 Kod: <span id="active-game-code-lbl">9821</span></div>
+                </div>
+            </div>
+
+            <!-- LOBBY -->
+            <div id="game-lobby-box" class="kahoot-arena">
+                <div></div>
+                <div>
+                    <h2 style="font-size:2rem; margin-bottom:12px;">Gör dig redo att spela Kahoot!</h2>
+                    <p style="font-size:1.1rem; opacity:0.9; margin-bottom:20px;">Spelkod:</p>
+                    <div style="font-size:4.5rem; font-weight:800; background:rgba(0,0,0,0.3); display:inline-block; padding:10px 30px; border-radius:20px; margin-bottom:30px;" id="lobby-code-big">9821</div>
+                </div>
+                <div>
+                    <button class="btn-primary" style="background:white; color:#46178f; font-size:1.2rem; padding:16px 40px; border:none;" onclick="startKahootGamePlay()">▶️ Starta Kahoot Nu!</button>
+                </div>
+            </div>
+
+            <!-- SPELFRÅGA (KAHOOT STYLE) -->
+            <div id="game-play-box" class="kahoot-arena" style="display:none; justify-content: flex-start;">
+                <div id="kahoot-top-banner">
+                    <div id="banner-feedback-title" style="font-size: 1.4rem; font-weight: 800; margin-bottom: 12px;">Rätt!</div>
+                    <div id="banner-leaderboard-list"></div>
+                    <button class="kahoot-next-btn" onclick="proceedAfterBannerClick()">Nästa fråga ➡️</button>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;" id="kahoot-header-info">
+                    <span id="kahoot-q-counter" style="font-weight:800; font-size:1.1rem;">Fråga 1 av 10</span>
+                    <div class="kahoot-timer-circle" id="kahoot-timer-display">20</div>
+                    <span id="kahoot-score-display" style="font-weight:800; font-size:1.1rem;">Poäng: 0</span>
+                </div>
+                
+                <div style="background:#310d69; padding:24px; border-radius:16px; margin-bottom:20px; border:2px solid rgba(255,255,255,0.2);" id="kahoot-question-container">
+                    <h2 id="kahoot-q-title" style="font-size:1.6rem; font-weight:800; margin-bottom:8px;">Fråga...</h2>
+                </div>
+
+                <div id="kahoot-options-grid" class="kahoot-grid"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RESULTAT MODAL -->
+    <div class="modal-overlay" id="info-modal">
+        <div class="modal-content" style="text-align: center;">
+            <h2 id="modal-title" style="color:var(--text-main)">Resultat</h2>
+            <div style="font-size:3.5rem; font-weight:800; color:var(--brand-dark-green); margin:12px 0;" id="modal-grade"></div>
+            <p id="modal-feedback" style="color:var(--text-muted); line-height:1.5; margin-bottom: 20px; font-weight:600;"></p>
+            <button class="btn-primary" onclick="document.getElementById('info-modal').style.display='none'; showDashboard();">Stäng</button>
         </div>
     </div>
 
-    <!-- CLASS SCREEN -->
-    <div id="classScreen" class="screen">
-        <h2>Min Klass & Statistik</h2>
-        <p>Här visas aktiva elever och sparade resultat för er klass.</p>
-        <ul id="classList" style="color: #333; background: #f9f9f9; padding: 20px; border-radius: 8px;">
-            <li>Inga sparade resultat än. Gör ett prov för att registrera poäng!</li>
-        </ul>
-        <button class="btn" style="background-color: #666;" onclick="backToPortal()">Tillbaka till portalen</button>
-    </div>
+    <!-- INSTÄLLNINGAR MODAL -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <h2 style="color:var(--brand-dark-green); margin-bottom:16px; border-bottom:2px solid var(--card-border); padding-bottom:8px;">⚙️ Inställningar & Profil</h2>
+            
+            <div class="form-group"><label>Visningsnamn</label><input type="text" id="settings-username" class="form-input"></div>
+            <div class="form-group"><label>Din Gmail</label><input type="email" id="settings-email" class="form-input"></div>
+            <div class="form-group"><label>Klassrum / Gruppkod</label><input type="text" id="settings-classcode" class="form-input"></div>
+            
+            <div class="form-group">
+                <label>Välj Avatar-Emoji</label>
+                <div class="avatar-grid">
+                    <span class="avatar-option" onclick="selectAvatar('👑', this)">👑</span>
+                    <span class="avatar-option" onclick="selectAvatar('🦊', this)">🦊</span>
+                    <span class="avatar-option" onclick="selectAvatar('🦁', this)">🦁</span>
+                    <span class="avatar-option" onclick="selectAvatar('🦉', this)">🦉</span>
+                    <span class="avatar-option" onclick="selectAvatar('🤖', this)">🤖</span>
+                    <span class="avatar-option" onclick="selectAvatar('🚀', this)">🚀</span>
+                </div>
+            </div>
 
-    <!-- QUIZ SCREEN (Kahoot-stil) -->
-    <div id="quizScreen" class="screen">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold; color: #666;">
-            <span id="questionCounter">Fråga 1</span>
-            <span id="scoreTracker">Poäng: 0</span>
+            <div class="form-group">
+                <label>Eller ladda upp egen profilbild (Fil)</label>
+                <input type="file" id="settings-avatar-file" class="form-input" accept="image/*" onchange="handleAvatarUpload(event)">
+            </div>
+
+            <div class="form-group" style="margin-top:16px; border-top:2px solid var(--card-border); padding-top:12px;">
+                <label>Välj Färgtema</label>
+                <select id="theme-select" class="form-input" onchange="changeTheme(this.value)">
+                    <option value="default">🟢 Klassisk Grön & Vit</option>
+                    <option value="mint">🌿 Mintgrön</option>
+                    <option value="sunset">🌅 Solnedgång (Orange/Guld)</option>
+                    <option value="dark">🌙 Mörkt läge (Dark mode)</option>
+                    <option value="cyberpunk">⚡ Cyberpunk (Rosa/Neon)</option>
+                    <option value="purple">🔮 Lila dröm</option>
+                </select>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button class="btn-sm" onclick="closeSettingsModal()">Avbryt</button>
+                <button class="btn-primary" onclick="saveSettings()">Spara & Stäng</button>
+            </div>
         </div>
-        <div id="questionContainer"></div>
-        <button class="btn" style="background-color: #e21b3c; margin-top: 20px;" onclick="backToPortal()">Avbryt prov</button>
     </div>
 
-    <!-- RESULT SCREEN -->
-    <div id="resultScreen" class="screen">
-        <h1>Provresultat! 🎉</h1>
-        <div id="resultSummary" style="background: #e8f8f5; border: 2px solid var(--kahoot-green); padding: 20px; border-radius: 8px; color: #333; margin-top: 20px;"></div>
-        <button class="btn" onclick="backToPortal()">Tillbaka till portalen</button>
-    </div>
-</div>
+    <script>
+        const ADMIN_EMAILS = ["emanuel.b.nilsson@gmail.com", "admin@provportal.se"];
 
-<script>
-// Databas med 6 grundprov
-const quizzes = [
-    // 1. Fysik
-    [
-        { q: "Vad händer om du för samman nordpol på två magneter?", choices: ["De attraherar", "De repellerar", "Ingenting"], correct: 1 },
-        { q: "Vad kallas en spole med järnkärna och ström?", choices: ["Transformator", "Elektromagnet", "Generator"], correct: 1 },
-        { q: "Vad omvandlar en elmotor?", choices: ["Rörelse till el", "El till rörelse", "Värme till el"], correct: 1 }
-    ],
-    // 2. Kemi
-    [
-        { q: "Vad heter atomens centrala del?", choices: ["Elektron", "Kärna", "Skal"], correct: 1 },
-        { q: "Vilken kemisk beteckning har vatten?", choices: ["CO2", "H2O", "O2"], correct: 1 },
-        { q: "Vad kallas ämnen med pH under 7?", choices: ["Baser", "Syror", "Neutrala"], correct: 1 }
-    ],
-    // 3. Biologi
-    [
-        { q: "Vad heter växternas process för att tillverka näring?", choices: ["Fotosyntes", "Respiration", "Fermentering"], correct: 0 },
-        { q: "Vilket organ pumpa blodet i kroppen?", choices: ["Lungorna", "Hjärtat", "Levern"], correct: 1 },
-        { q: "Vad kallas levande varelsers samspel i ett område?", choices: ["Ekosystem", "Atmosfär", "Geosfär"], correct: 0 }
-    ],
-    // 4. Matematik
-    [
-        { q: "Vad är 7 * 8?", choices: ["54", "56", "64"], correct: 1 },
-        { q: "Hur mycket är 25% av 200?", choices: ["25", "50", "75"], correct: 1 },
-        { q: "Vad är arean på en rektangel med sidorna 4 cm och 5 cm?", choices: ["9 cm²", "20 cm²", "18 cm²"], correct: 1 }
-    ],
-    // 5. Historia
-    [
-        { q: "När slutade det andra världskriget?", choices: ["1942", "1945", "1950"], correct: 1 },
-        { q: "Vem upptäckte Amerika (enligt traditionell historieskrivning)?", choices: ["Vasco da Gama", "Kristofer Columbus", "Leif Eriksson"], correct: 1 },
-        { q: "Vad kallas tidsperioden före medeltiden i Europa?", choices: ["Antiken", "Renässansen", "Industrialismen"], correct: 0 }
-    ],
-    // 6. Geografi
-    [
-        { q: "Vilken är världens största ocean?", choices: ["Atlanten", "Stilla havet", "Indiska oceanen"], correct: 1 },
-        { q: "Vilket land har flest invånare?", choices: ["USA", "Indien / Kina", "Brasilien"], correct: 1 },
-        { q: "Vad heter Sveriges längsta flod (eller största sjö)?", choices: ["Vänern", "Torne älv", "Mälaren"], correct: 0 }
-    ]
-];
+        const defaultExams = {
+            elektricitet: {
+                title: "Fysik: Elektricitet och magnetism (Kapitel 9)",
+                subject: "Fysik",
+                subjectColor: "#15803d",
+                classCode: "8A",
+                questions: [
+                    { title: "1. Magnetens poler", text: "Vad händer om du för mot två nordpoler från varandra?", options: [{ val: "a", text: "De repellerar (stötte bort varandra)", correct: true }, { val: "b", text: "De attraherar (dras till varandra)", correct: false }, { val: "c", text: "Ingenting händer", correct: false }, { val: "d", text: "De bildar en kompass", correct: false }] },
+                    { title: "2. Attrahera", text: "Vad betyder det att magneter attraherar varandra?", options: [{ val: "a", text: "Att de dras till varandra (olika poler möts)", correct: true }, { val: "b", text: "Att de stöter bort varandra", correct: false }, { val: "c", text: "Att de tappar kraft", correct: false }, { val: "d", text: "Att de blir strömförande", correct: false }] },
+                    { title: "3. Magnetfält", text: "Vad visar magnetfältets fältlinjer?", options: [{ val: "a", text: "Hur magnetkrafterna breder ut sig från nordpol till sydpol", correct: true }, { val: "b", text: "Vart elektriciteten flyr", correct: false }, { val: "c", text: "Hur varm magneten är", correct: false }, { val: "d", text: "Jordens lufttryck", correct: false }] },
+                    { title: "4. Jordens magnetfält", text: "Vilken viktig funktion har jordens magnetfält?", options: [{ val: "a", text: "Det skyddar jorden mot solvindar och laddade partiklar", correct: true }, { val: "b", text: "Det gör att molnen stannar kvar", correct: false }, { val: "c", text: "Det skapar allt dricksvatten", correct: false }, { val: "d", text: "Det styr jordens rotation kring solen", correct: false }] },
+                    { title: "5. Elektromagnetism", text: "Vad upptäckte Hans Christian Ørsted gällande elektricitet och magneter?", options: [{ val: "a", text: "Att elektrisk ström skapar ett runt magnetfält runt en ledare", correct: true }, { val: "b", text: "Att magneter kan koka vatten", correct: false }, { val: "c", text: "Att el helt saknar koppling till magnetism", correct: false }, { val: "d", text: "Att batterier laddas av månen", correct: false }] },
+                    { title: "6. Elektromagnetens delar", text: "Vilka tre grundläggande delar bygger upp en elektromagnet?", options: [{ val: "a", text: "Spole, järnkärna och strömkälla", correct: true }, { val: "b", text: "Glas, plast och koppar", correct: false }, { val: "c", text: "Sten, tråd och syre", correct: false }, { val: "d", text: "Glödlampa, sladd och vind", correct: false }] },
+                    { title: "7. Styrka på elektromagnet", text: "Vad påverkar en elektromagnetss styrka?", options: [{ val: "a", text: "Antalet varv på spolen, strömmens styrka och järnkärnan", correct: true }, { val: "b", text: "Färgen på sladdarna", correct: false }, { val: "c", text: "Hur stor lampa som sitter i kretsen", correct: false }, { val: "d", text: "Vilket väder det är ute", correct: false }] },
+                    { title: "8. Användningsområden", text: "Vilket av följande är ett exempel där man använder elektromagneter?", options: [{ val: "a", text: "Högtalare och branddörrar som hålls öppna med magneter", correct: true }, { val: "b", text: "Vanliga träpinnar", correct: false }, { val: "c", text: "Pappersark i en skrivare", correct: false }, { val: "d", text: "Vattenkranar", correct: false }] },
+                    { title: "9. Induktion", text: "Vad menas med begreppet induktion inom fysiken?", options: [{ val: "a", text: "Att en magnet i rörelse i en spole skapar elektrisk ström", correct: true }, { val: "b", text: "Att batterier sprängs om de laddas för länge", correct: false }, { val: "c", text: "Att metall rostar i saltvatten", correct: false }, { val: "d", text: "Att glödlampor lyser starkare i kyla", correct: false }] },
+                    { title: "10. Elmotor", text: "Vad gör en elmotor rent energimässigt?", options: [{ val: "a", text: "Omvandlar elektricitet till rörelseenergi", correct: true }, { val: "b", text: "Omvandlar rörelse till el", correct: false }, { val: "c", text: "Skapar värme av ingenting", correct: false }, { val: "d", text: "Omvandlar kyla till ljus", correct: false }] },
+                    { title: "11. Generator", text: "Vad är uppgiften för en generator i till exempel ett kraftverk?", options: [{ val: "a", text: "Att omvandla rörelseenergi (från vind eller vatten) till elektricitet", correct: true }, { val: "b", text: "Att höja vattnets temperatur", correct: false }, { val: "c", text: "Att driva en elvisp", correct: false }, { val: "d", text: "Att förbruka så mycket ström som möjligt", correct: false }] },
+                    { title: "12. Skrivfråga: Elektromagnet", type: "text", text: "Förklara med egna ord vad en elektromagnet är och hur den fungerar (nämn spole, järnkärna och ström)." },
+                    { title: "13. Skrivfråga: Jordens magnetfält", type: "text", text: "Förklara vad jordens magnetfält är för något och varför det är livsviktigt för oss på jorden." },
+                    { title: "14. Skrivfråga: Elmotor vs Generator", type: "text", text: "Beskriv hur en elmotor och en generator skiljer sig åt när det gäller omvandling av energi (ge gärna exempel på vardagsföremål)." },
+                    { title: "15. Skrivfråga: Transformator", type: "text", text: "Förklara vad en transformator gör med spänningen och ge ett exempel på var du använder en i din vardag." }
+                ]
+            },
+            baggersee: { 
+                title: "Tyska: Baggersee (Glosor Åk 8)", 
+                subject: "Tyska", 
+                subjectColor: "#15803d", 
+                classCode: "8A", 
+                questions: [
+                    { title: "1. Baggersee", text: "Vad betyder det tyska ordet 'der Baggersee'?", options: [{ val: "a", text: "Badsjö / grustagssjö", correct: true }, { val: "b", text: "Ett högt berg", correct: false }, { val: "c", text: "En djup skog", correct: false }, { val: "d", text: "En simhall", correct: false }] },
+                    { title: "2. Sommerferien", text: "Vad betyder 'die Sommerferien'?", options: [{ val: "a", text: "Sommarlov", correct: true }, { val: "b", text: "Sommarväder", correct: false }, { val: "c", text: "Sommarkläder", correct: false }, { val: "d", text: "Sommarjobb", correct: false }] },
+                    { title: "3. Sonne", text: "Vad betyder 'die Sonne'?", options: [{ val: "a", text: "Solen", correct: true }, { val: "b", text: "Månen", correct: false }, { val: "c", text: "Stjärnan", correct: false }, { val: "d", text: "Molnet", correct: false }] },
+                    { title: "4. Schwimmen", text: "Vad betyder verbet 'schwimmen'?", options: [{ val: "a", text: "Simma", correct: true }, { val: "b", text: "Springa", correct: false }, { val: "c", text: "Sova", correct: false }, { val: "d", text: "Hoppa", correct: false }] },
+                    { title: "5. Eis essen", text: "Vad betyder uttrycket 'Eis essen'?", options: [{ val: "a", text: "Äta glass", correct: true }, { val: "b", text: "Dricka saft", correct: false }, { val: "c", text: "Koka is", correct: false }, { val: "d", text: "Köpa godis", correct: false }] },
+                    { title: "6. Freunde", text: "Vad betyder 'die Freunde'?", options: [{ val: "a", text: "Vännerna", correct: true }, { val: "b", text: "Föräldrarna", correct: false }, { val: "c", text: "Syskonen", correct: false }, { val: "d", text: "Lärarna", correct: false }] },
+                    { title: "7. Heiß", text: "Vad betyder adjektivet 'heiß'?", options: [{ val: "a", text: "Varm / hett", correct: true }, { val: "b", text: "Kallt", correct: false }, { val: "c", text: "Fuktigt", correct: false }, { val: "d", text: "Mörkt", correct: false }] },
+                    { title: "8. Strand", text: "Vad betyder 'der Strand'?", options: [{ val: "a", text: "Strand", correct: true }, { val: "b", text: "Sten", correct: false }, { val: "c", text: "Brygga", correct: false }, { val: "d", text: "Våg", correct: false }] },
+                    { title: "9. Rad fahren", text: "Vad betyder uttrycket 'Rad fahren'?", options: [{ val: "a", text: "Cykla", correct: true }, { val: "b", text: "Köra bil", correct: false }, { val: "c", text: "Åka tåg", correct: false }, { val: "d", text: "Gå till fots", correct: false }] },
+                    { title: "10. Wetter", text: "Vad betyder 'das Wetter'?", options: [{ val: "a", text: "Vädret", correct: true }, { val: "b", text: "Vattnet", correct: false }, { val: "c", text: "Vinden", correct: false }, { val: "d", text: "Vågen", correct: false }] }
+                ]
+            },
+            friluftsliv: { 
+                title: "Idrott & Hälsa: Friluftsliv", 
+                subject: "Idrott & Hälsa", 
+                subjectColor: "#15803d", 
+                classCode: "8A", 
+                questions: Array.from({length: 10}, (_, i) => ({ 
+                    title: `${i+1}. Friluftsliv (Fråga ${i+1})`, 
+                    text: `Fråga ${i+1} gällande allemansrätten och friluftsliv:`, 
+                    options: [
+                        { val: "a", text: "Inte störa - inte förstöra", correct: true }, 
+                        { val: "b", text: "Gör exakt som du vill i skogen", correct: false }, 
+                        { val: "c", text: "Skräpa ner om du är trött", correct: false }, 
+                        { val: "d", text: "Elda var som helst året om", correct: false }
+                    ] 
+                })) 
+            },
+            hinduism: { 
+                title: "Religionskunskap: Hinduism", 
+                subject: "Religionskunskap", 
+                subjectColor: "#b45309", 
+                classCode: "8A", 
+                questions: Array.from({length: 10}, (_, i) => ({ 
+                    title: `${i+1}. Hinduism (Fråga ${i+1})`, 
+                    text: `Fråga ${i+1} inom området Hinduism:`, 
+                    options: [
+                        { val: "a", text: "Diwali (ljusfesten)", correct: true }, 
+                        { val: "b", text: "Ramadan", correct: false }, 
+                        { val: "c", text: "Påskdagen", correct: false }, 
+                        { val: "d", text: "Sabbaten", correct: false }
+                    ] 
+                })) 
+            },
+            fysik: { 
+                title: "Fysik: Krafter & Rörelse", 
+                subject: "Fysik", 
+                subjectColor: "#15803d", 
+                classCode: "8A", 
+                questions: Array.from({length: 10}, (_, i) => ({ 
+                    title: `${i+1}. Fysik (Fråga ${i+1})`, 
+                    text: `Fråga ${i+1} om krafter och fysikaliska lagar:`, 
+                    options: [
+                        { val: "a", text: "Newton (N)", correct: true }, 
+                        { val: "b", text: "Kilogram (kg)", correct: false }, 
+                        { val: "c", text: "Volt (V)", correct: false }, 
+                        { val: "d", text: "Joule (J)", correct: false }
+                    ] 
+                })) 
+            },
+            historia: { 
+                title: "Historia: Amerikanska Revolutionen", 
+                subject: "Historia", 
+                subjectColor: "#b45309", 
+                classCode: "8A", 
+                questions: Array.from({length: 10}, (_, i) => ({ 
+                    title: `${i+1}. Historia (Fråga ${i+1})`, 
+                    text: `Fråga ${i+1} om historiska händelser:`, 
+                    options: [
+                        { val: "a", text: "År 1776", correct: true }, 
+                        { val: "b", text: "År 1789", correct: false }, 
+                        { val: "c", text: "År 1914", correct: false }, 
+                        { val: "d", text: "År 1945", correct: false }
+                    ] 
+                })) 
+            }
+        };
 
-let currentQuiz = [];
-let currentIdx = 0;
-let score = 0;
-let studentName = "";
-let classResults = [];
+        let activeExamKey = null, activeExam = null, activeQuestionIndex = 0, userAnswers = {};
+        let currentUser = localStorage.getItem('portal_user') || '';
+        let currentEmail = localStorage.getItem('portal_email') || '';
+        let currentRole = localStorage.getItem('portal_role') || 'student';
+        let currentClassCode = localStorage.getItem('portal_classcode') || '8A';
+        let classPasswords = JSON.parse(localStorage.getItem('portal_class_passwords') || '{"8A": "1234"}');
+        let currentCoins = parseInt(localStorage.getItem('portal_coins') || '50');
+        let currentAvatar = localStorage.getItem('portal_avatar') || '👑';
+        let authMode = 'join';
 
-function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
-}
+        let customExams = JSON.parse(localStorage.getItem('portal_custom_exams') || '{}');
+        let classAssignedExams = JSON.parse(localStorage.getItem('portal_class_assigned') || '{}');
+        let examResults = JSON.parse(localStorage.getItem('portal_results') || '[]');
+        let gameScoresList = JSON.parse(localStorage.getItem('portal_game_scores') || '[]');
+        
+        let classMembers = JSON.parse(localStorage.getItem('portal_class_members') || JSON.stringify([
+            { name: "Emanuel", email: "emanuel.b.nilsson@gmail.com", role: "owner", classCode: "8A", avatar: "👑" },
+            { name: "Anna Elev", email: "anna@elev.se", role: "student", classCode: "8A", avatar: "🦊" }
+        ]));
 
-function startSelectedQuiz(quizIndex) {
-    const nameInput = document.getElementById("studentName").value.trim();
-    if (!nameInput) {
-        alert("Vänligen skriv in ditt namn först!");
-        return;
-    }
-    studentName = nameInput;
-    currentQuiz = quizzes[quizIndex];
-    currentIdx = 0;
-    score = 0;
-    showScreen('quizScreen');
-    loadQuestion();
-}
+        let builderQuestions = [{ 
+            title: "Fråga 1", 
+            type: "mc", 
+            text: "Frågetext här...", 
+            options: [
+                {val:'a', text:'Rätt svar', correct:true}, 
+                {val:'b', text:'Fel svar 1', correct:false},
+                {val:'c', text:'Fel svar 2', correct:false},
+                {val:'d', text:'Fel svar 3', correct:false}
+            ]
+        }];
+        
+        let activeGameExamKey = null, kahootQIdx = 0, kahootScore = 0, kahootTimer = 20, kahootTimerInterval = null;
+        let shuffledCurrentOptions = [];
 
-function loadQuestion() {
-    if (currentIdx >= currentQuiz.length) {
-        showResults();
-        return;
-    }
-
-    const q = currentQuiz[currentIdx];
-    document.getElementById("questionCounter").innerText = `Fråga ${currentIdx + 1} av ${currentQuiz.length}`;
-    document.getElementById("scoreTracker").innerText = `Poäng: ${score}`;
-
-    const container = document.getElementById("questionContainer");
-    let html = `<div class="question-box">${q.q}</div><div class="choices-grid">`;
-    q.choices.forEach((choice, index) => {
-        html += `<button class="choice-btn choice-${index}" onclick="answerQuestion(${index})">${String.fromCharCode(65 + index)}: ${choice}</button>`;
-    });
-    html += `</div>`;
-    container.innerHTML = html;
-}
-
-function answerQuestion(selectedIndex) {
-    const q = currentQuiz[currentIdx];
-    if (selectedIndex === q.correct) {
-        score++;
-    }
-    currentIdx++;
-    loadQuestion();
-}
-
-function showResults() {
-    showScreen('resultScreen');
-    const total = currentQuiz.length;
-    let summaryText = `<strong>Elev:</strong> ${studentName}<br><strong>Resultat:</strong> ${score} av ${total} poäng.`;
-    document.getElementById("resultSummary").innerHTML = summaryText;
-
-    // Spara till klasslistan
-    classResults.push({ name: studentName, score: score, total: total });
-}
-
-function openClassView() {
-    showScreen('classScreen');
-    const list = document.getElementById("classList");
-    if (classResults.length === 0) {
-        list.innerHTML = "<li>Inga provresultat registrerade än under denna session.</li>";
-    } else {
-        let html = "";
-        classResults.forEach(res => {
-            html += `<li><strong>${res.name}:</strong> ${res.score} / ${res.total} poäng</li>`;
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('portal_theme') || 'default';
+            changeTheme(savedTheme); 
+            document.getElementById('theme-select').value = savedTheme;
+            
+            if (!currentUser) {
+                document.getElementById('view-auth').style.display = 'block';
+                document.getElementById('view-dashboard').style.display = 'none';
+            } else {
+                showDashboard();
+            }
         });
-        list.innerHTML = html;
-    }
-}
 
-function backToPortal() {
-    showScreen('portalScreen');
-}
-</script>
+        function setAuthMode(mode) {
+            authMode = mode;
+            const btnJoin = document.getElementById('btn-mode-join');
+            const btnCreate = document.getElementById('btn-mode-create');
+            const pwdGroup = document.getElementById('group-class-pwd');
+            const roleGroup = document.getElementById('role-select-group');
 
+            if (mode === 'join') {
+                btnJoin.style.background = 'var(--card-white)';
+                btnJoin.style.borderColor = 'var(--brand-green)';
+                btnCreate.style.background = 'var(--bg-light)';
+                pwdGroup.style.display = 'none';
+                roleGroup.style.display = 'block';
+            } else {
+                btnCreate.style.background = 'var(--card-white)';
+                btnCreate.style.borderColor = 'var(--brand-green)';
+                btnJoin.style.background = 'var(--bg-light)';
+                pwdGroup.style.display = 'block';
+                roleGroup.style.display = 'block';
+            }
+        }
+
+        function handleAuth() {
+            currentUser = document.getElementById('auth-username').value.trim();
+            currentEmail = document.getElementById('auth-email').value.trim().toLowerCase();
+            const classCode = document.getElementById('auth-classcode').value.trim().toUpperCase();
+            const classPwd = document.getElementById('auth-classpwd').value;
+            const chosenRole = document.getElementById('auth-role').value;
+
+            if (!currentUser || !currentEmail) {
+                alert("Vänligen fyll i både namn och e-postadress.");
+                return;
+            }
+
+            if (ADMIN_EMAILS.includes(currentEmail)) {
+                currentRole = 'owner';
+            } else {
+                currentRole = chosenRole;
+            }
+
+            if (authMode === 'create') {
+                if (!classPwd) {
+                    alert("Ange ett lösenord för att skapa klassen.");
+                    return;
+                }
+                classPasswords[classCode] = classPwd;
+                localStorage.setItem('portal_class_passwords', JSON.stringify(classPasswords));
+                currentClassCode = classCode;
+                alert(`Klass ${classCode} skapades framgångsrikt!`);
+            } else {
+                if (classPasswords[classCode]) {
+                    const inputPwd = prompt(`Klassen ${classCode} är lösenordsskyddad. Ange lösenord för att gå med:`);
+                    if (inputPwd !== classPasswords[classCode]) {
+                        alert("Felaktigt klasslösenord!");
+                        return;
+                    }
+                }
+                currentClassCode = classCode;
+            }
+
+            const existingMember = classMembers.find(m => m.email === currentEmail && m.classCode === currentClassCode);
+            if (!existingMember) {
+                classMembers.push({ name: currentUser, email: currentEmail, role: currentRole, classCode: currentClassCode, avatar: currentAvatar });
+            } else {
+                existingMember.name = currentUser;
+                existingMember.role = currentRole;
+                existingMember.avatar = currentAvatar;
+            }
+            localStorage.setItem('portal_class_members', JSON.stringify(classMembers));
+
+            localStorage.setItem('portal_user', currentUser);
+            localStorage.setItem('portal_email', currentEmail);
+            localStorage.setItem('portal_role', currentRole);
+            localStorage.setItem('portal_classcode', currentClassCode);
+
+            showDashboard();
+        }
+
+        function logout() {
+            localStorage.removeItem('portal_user');
+            localStorage.removeItem('portal_email');
+            localStorage.removeItem('portal_role');
+            currentUser = '';
+            currentEmail = '';
+            currentRole = 'student';
+            
+            document.getElementById('view-dashboard').style.display = 'none';
+            document.getElementById('view-exam').style.display = 'none';
+            document.getElementById('view-game-arena').style.display = 'none';
+            document.getElementById('view-auth').style.display = 'block';
+        }
+
+        function showDashboard() {
+            document.getElementById('view-auth').style.display = 'none';
+            document.getElementById('view-exam').style.display = 'none';
+            document.getElementById('view-game-arena').style.display = 'none';
+            document.getElementById('view-dashboard').style.display = 'block';
+            
+            document.getElementById('user-display-name').innerText = currentUser;
+            document.getElementById('user-coins-display').innerText = `🪙 ${currentCoins} mynt`;
+            
+            const badge = document.getElementById('header-role-badge');
+            if (currentRole === 'owner') {
+                badge.className = 'role-badge-owner';
+                badge.innerText = 'Owner';
+                document.getElementById('tab-btn-create').style.display = 'flex';
+            } else if (currentRole === 'teacher') {
+                badge.className = 'role-badge-teacher';
+                badge.innerText = 'Lärare';
+                document.getElementById('tab-btn-create').style.display = 'flex';
+            } else {
+                badge.className = 'role-badge-student';
+                badge.innerText = 'Elev';
+                document.getElementById('tab-btn-create').style.display = 'none';
+            }
+
+            updateHeaderAvatar();
+            populateGameSelect();
+            switchTab('exams');
+        }
+
+        function updateHeaderAvatar() {
+            const box = document.getElementById('header-avatar-box');
+            if (currentAvatar.startsWith('data:image') || currentAvatar.startsWith('http')) {
+                box.innerHTML = `<img src="${currentAvatar}" alt="Avatar">`;
+            } else {
+                box.innerHTML = currentAvatar;
+            }
+        }
+
+        function populateGameSelect() {
+            const select = document.getElementById('select-game-exam');
+            select.innerHTML = '';
+            const allExams = { ...defaultExams, ...classAssignedExams, ...customExams };
+            for (const key in allExams) {
+                select.innerHTML += `<option value="${key}">${allExams[key].title} (${allExams[key].questions.length} frågor)</option>`;
+            }
+        }
+
+        function switchTab(tabId) {
+            if (tabId === 'create' && currentRole === 'student') {
+                alert("Endast lärare och ägare kan skapa prov.");
+                return;
+            }
+            ['exams', 'class-category', 'members', 'my-exams', 'create', 'results', 'leaderboard'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (el) el.style.display = (t === tabId) ? 'block' : 'none';
+            });
+            document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick')?.includes(tabId)) btn.classList.add('active');
+            });
+            if (tabId === 'exams') renderExamsList();
+            if (tabId === 'class-category') { renderClassAssignedExams(); renderClassPointsLeaderboard(); }
+            if (tabId === 'members') renderClassMembers();
+            if (tabId === 'my-exams') renderMySavedExams();
+            if (tabId === 'create') renderBuilderQuestions();
+            if (tabId === 'results') renderResultsList();
+            if (tabId === 'leaderboard') renderLeaderboard();
+        }
+
+        function renderClassMembers() {
+            document.getElementById('members-class-code-lbl').innerText = currentClassCode;
+            const container = document.getElementById('class-members-container');
+            const membersInClass = classMembers.filter(m => m.classCode === currentClassCode);
+
+            if (membersInClass.length === 0) {
+                container.innerHTML = '<div class="empty-text">Inga medlemmar hittades i denna klass.</div>';
+                return;
+            }
+
+            let html = `<table class="leaderboard-table"><tr><th>Avatar</th><th>Namn</th><th>E-post</th><th>Roll</th></tr>`;
+            membersInClass.forEach((m) => {
+                let roleBadgeClass = 'role-badge-student';
+                let roleName = 'Elev';
+                if (m.role === 'owner') { roleBadgeClass = 'role-badge-owner'; roleName = 'Owner'; }
+                else if (m.role === 'teacher') { roleBadgeClass = 'role-badge-teacher'; roleName = 'Lärare'; }
+
+                let avatarDisplay = m.avatar && (m.avatar.startsWith('data:image') || m.avatar.startsWith('http')) ? 
+                    `<img src="${m.avatar}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">` : (m.avatar || '👤');
+
+                html += `<tr>
+                    <td style="font-size:1.4rem;">${avatarDisplay}</td>
+                    <td><strong>${m.name}</strong></td>
+                    <td>${m.email}</td>
+                    <td><span class="${roleBadgeClass}">${roleName}</span></td>
+                </tr>`;
+            });
+            html += `</table>`;
+            container.innerHTML = html;
+        }
+
+        function renderExamsList() {
+            const container = document.getElementById('default-exams-grid');
+            container.innerHTML = '';
+            const searchVal = document.getElementById('search-exam-input').value.toLowerCase().trim();
+            for (const key in defaultExams) {
+                const exam = defaultExams[key];
+                if (searchVal && !exam.title.toLowerCase().includes(searchVal)) continue;
+                let actionBtns = `<button class="btn-start" style="flex:1;" onclick="startExam('${key}')">Starta Prov</button>`;
+                if (currentRole === 'owner' || currentRole === 'teacher') {
+                    actionBtns += `<button class="btn-sm" onclick="publishDefaultExamToClass('${key}')">➕ Till klass</button>`;
+                }
+                container.innerHTML += `
+                    <div class="exam-card">
+                        <div class="card-top"><span class="subject-tag" style="color:${exam.subjectColor}">${exam.subject}</span><span class="grade-badge">Klass ${exam.classCode}</span></div>
+                        <div class="exam-title">${exam.title}</div>
+                        <div class="exam-meta">📝 ${exam.questions.length} Uppgifter</div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">${actionBtns}</div>
+                    </div>`;
+            }
+        }
+
+        function publishDefaultExamToClass(key) {
+            const exam = defaultExams[key];
+            if (!exam) return;
+            classAssignedExams[key] = exam;
+            localStorage.setItem('portal_class_assigned', JSON.stringify(classAssignedExams));
+            alert(`Provet "${exam.title}" har lagts till i Klassens Prov!`);
+            switchTab('class-category');
+        }
+
+        function renderClassAssignedExams() {
+            const container = document.getElementById('class-assigned-exams-grid');
+            container.innerHTML = '';
+            let hasExams = false;
+            for (const key in classAssignedExams) {
+                const exam = classAssignedExams[key];
+                container.innerHTML += `
+                    <div class="exam-card">
+                        <div class="card-top"><span class="subject-tag" style="color:var(--brand-dark-green);">${exam.subject}</span><span class="grade-badge">Klass ${exam.classCode}</span></div>
+                        <div class="exam-title">${exam.title}</div>
+                        <div class="exam-meta">📝 ${exam.questions.length} Uppgifter</div>
+                        <button class="btn-start" onclick="startExam('${key}')">Gör Prov</button>
+                    </div>`;
+                hasExams = true;
+            }
+            if (!hasExams) container.innerHTML = '<div class="empty-text">Inga prov tilldelade till klassen än.</div>';
+        }
+
+        function renderClassPointsLeaderboard() {
+            const container = document.getElementById('class-points-leaderboard-container');
+            const sortedScores = [...gameScoresList].sort((a, b) => b.score - a.score);
+            
+            if (sortedScores.length === 0) {
+                container.innerHTML = '<div class="empty-text">Inga Kahoot-matcher spelade än. Starta ett spel i arenan för att synas här!</div>';
+                return;
+            }
+
+            let html = `<table class="leaderboard-table"><tr><th>Plac</th><th>Elev</th><th>Prov</th><th>Kahoot-poäng</th></tr>`;
+            sortedScores.forEach((item, index) => {
+                let av = item.avatar && (item.avatar.startsWith('data:image') || item.avatar.startsWith('http')) ? 
+                    `<img src="${item.avatar}" style="width:24px; height:24px; border-radius:50%; object-fit:cover; vertical-align:middle;">` : (item.avatar || '👤');
+                html += `<tr><td>#${index + 1}</td><td>${av} ${item.user}</td><td>${item.examTitle}</td><td><strong>🟣 ${item.score} p</strong></td></tr>`;
+            });
+            html += `</table>`;
+            container.innerHTML = html;
+        }
+
+        function renderMySavedExams() {
+            const container = document.getElementById('my-saved-exams-grid');
+            container.innerHTML = '';
+            let hasExams = false;
+            for (const key in customExams) {
+                const exam = customExams[key];
+                container.innerHTML += `
+                    <div class="exam-card">
+                        <div class="card-top"><span class="subject-tag" style="color:var(--brand-dark-green);">${exam.subject}</span><span class="grade-badge">Klass ${exam.classCode}</span></div>
+                        <div class="exam-title">${exam.title}</div>
+                        <div class="exam-meta">📝 ${exam.questions.length} Uppgifter</div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button class="btn-start" style="flex:1;" onclick="startExam('${key}')">Starta</button>
+                            <button class="btn-sm" onclick="publishExamToClass('${key}')">Till klass</button>
+                        </div>
+                    </div>`;
+                hasExams = true;
+            }
+            if (!hasExams) container.innerHTML = '<div class="empty-text">Inga egna prov sparade än.</div>';
+        }
+
+        function publishExamToClass(key) {
+            const exam = customExams[key];
+            if (!exam) return;
+            classAssignedExams[key] = exam;
+            localStorage.setItem('portal_class_assigned', JSON.stringify(classAssignedExams));
+            alert(`Provet "${exam.title}" har lagts till i Klassens Prov!`);
+            switchTab('class-category');
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startExam(key) {
+            const allExams = { ...defaultExams, ...classAssignedExams, ...customExams };
+            activeExamKey = key; 
+            activeExam = JSON.parse(JSON.stringify(allExams[key]));
+            
+            activeExam.questions.forEach(q => {
+                if (q.options && q.options.length > 0) {
+                    q.options = shuffleArray(q.options);
+                }
+            });
+
+            activeQuestionIndex = 0; 
+            userAnswers = {};
+            document.getElementById('view-dashboard').style.display = 'none';
+            document.getElementById('view-exam').style.display = 'block';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = activeExam.questions[activeQuestionIndex];
+            document.getElementById('current-num').innerText = activeQuestionIndex + 1;
+            document.getElementById('total-num').innerText = activeExam.questions.length;
+            document.getElementById('q-title').innerText = q.title;
+            document.getElementById('q-text').innerText = q.text || "Svara på frågan nedan:";
+            document.getElementById('q-img').src = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500";
+
+            const area = document.getElementById('dynamic-answer-area');
+            area.innerHTML = '';
+
+            if (q.type === 'text') {
+                area.innerHTML = `
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;">Skriv ditt svar nedan:</p>
+                    <textarea class="form-input" rows="4" placeholder="Skriv ditt utförliga svar här..." oninput="userAnswers[${activeQuestionIndex}]=this.value">${userAnswers[activeQuestionIndex] || ''}</textarea>
+                `;
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'options-grid';
+                (q.options || []).forEach((opt, oIdx) => {
+                    const sel = userAnswers[activeQuestionIndex] === opt.val;
+                    grid.innerHTML += `<div class="option-card ${sel ? 'selected' : ''}" onclick="userAnswers[${activeQuestionIndex}]='${opt.val}';renderQuestion()">${opt.text}</div>`;
+                });
+                area.appendChild(grid);
+            }
+        }
+
+        function prevQuestion() { if (activeQuestionIndex > 0) { activeQuestionIndex--; renderQuestion(); } }
+        function nextQuestion() { if (activeQuestionIndex < activeExam.questions.length - 1) { activeQuestionIndex++; renderQuestion(); } }
+
+        function gradeCurrentExam() {
+            let score = 0, max = activeExam.questions.length;
+            activeExam.questions.forEach((q, idx) => {
+                if (q.type === 'text') {
+                    if (userAnswers[idx] && userAnswers[idx].trim().length >= 5) score++;
+                } else {
+                    const correctOpt = (q.options || []).find(o => o.correct);
+                    if (correctOpt && userAnswers[idx] === correctOpt.val) score++;
+                }
+            });
+            const percent = Math.round((score / max) * 100);
+            
+            // HÖGRE BETYGSKRAV (A >= 95%, C >= 80%, E >= 60%)
+            const grade = percent >= 95 ? 'A' : (percent >= 80 ? 'C' : (percent >= 60 ? 'E' : 'F'));
+            
+            currentCoins += score * 5; localStorage.setItem('portal_coins', currentCoins);
+
+            let avFormat = currentAvatar.startsWith('data:image') || currentAvatar.startsWith('http') ? currentAvatar : currentAvatar;
+            examResults.unshift({ user: currentUser, avatar: avFormat, examTitle: activeExam.title, date: new Date().toLocaleDateString('sv-SE'), score: `${score}/${max}`, grade, percent });
+            localStorage.setItem('portal_results', JSON.stringify(examResults));
+
+            document.getElementById('modal-title').innerText = "Prov Inlämnat!";
+            document.getElementById('modal-grade').innerText = `Betyg: ${grade}`;
+            document.getElementById('modal-feedback').innerText = `Du fick ${score}/${max} poäng (${percent}%). Med de nya högre kraven krävdes 95% för A, 80% för C och 60% för E! Tjänade 🪙 +${score*5} mynt!`;
+            document.getElementById('info-modal').style.display = 'flex';
+        }
+
+        function addQuestionToBuilder() {
+            builderQuestions.push({ 
+                title: `Fråga ${builderQuestions.length + 1}`, 
+                type: "mc",
+                text: "Frågetext här...", 
+                options: [
+                    {val:'a', text:'Rätt svar', correct:true}, 
+                    {val:'b', text:'Fel svar 1', correct:false},
+                    {val:'c', text:'Fel svar 2', correct:false},
+                    {val:'d', text:'Fel svar 3', correct:false}
+                ]
+            });
+            renderBuilderQuestions();
+        }
+
+        function renderBuilderQuestions() {
+            const list = document.getElementById('questions-builder-list');
+            list.innerHTML = '';
+            builderQuestions.forEach((q, qIdx) => {
+                let optionsHtml = '';
+                q.options.forEach((opt, oIdx) => {
+                    optionsHtml += `
+                        <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                            <input type="radio" name="correct_${qIdx}" ${opt.correct ? 'checked' : ''} onclick="setCorrectOption(${qIdx}, ${oIdx})" style="width:18px; height:18px; accent-color:var(--brand-green);">
+                            <input type="text" class="form-input" value="${opt.text}" oninput="builderQuestions[${qIdx}].options[${oIdx}].text=this.value" placeholder="Svarsalternativ ${oIdx+1}">
+                        </div>`;
+                });
+
+                list.innerHTML += `
+                    <div class="question-builder-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h3 style="color:var(--brand-dark-green); font-size:1rem;">Fråga ${qIdx + 1}</h3>
+                            ${builderQuestions.length > 1 ? `<button class="btn-sm" style="color:#ef4444;" onclick="removeQuestion(${qIdx})">🗑️</button>` : ''}
+                        </div>
+                        <div class="form-group"><label>Frågetitel</label><input type="text" class="form-input" value="${q.title}" oninput="builderQuestions[${qIdx}].title=this.value"></div>
+                        <div class="form-group"><label>Frågetext</label><input type="text" class="form-input" value="${q.text}" oninput="builderQuestions[${qIdx}].text=this.value"></div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Svarsalternativ (Markera radioknappen vid det <strong>RÄTTA</strong> svaret)</label>
+                            ${optionsHtml}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function setCorrectOption(qIdx, optIdx) {
+            builderQuestions[qIdx].options.forEach((opt, idx) => {
+                opt.correct = (idx === optIdx);
+            });
+        }
+
+        function removeQuestion(qIdx) {
+            builderQuestions.splice(qIdx, 1);
+            renderBuilderQuestions();
+        }
+
+        function generateExamWithAI() {
+            const subject = document.getElementById('ai-prompt-subject').value.trim();
+            const topic = document.getElementById('ai-prompt-topic').value.trim();
+            const count = parseInt(document.getElementById('ai-prompt-count').value);
+
+            if (!subject || !topic) {
+                alert("Vänligen fyll i både ämne och ämnesområde för att AI:n ska kunna skapa frågor.");
+                return;
+            }
+
+            document.getElementById('new-exam-title').value = `${subject}: ${topic} (AI-skapat)`;
+            document.getElementById('new-exam-subject').value = subject;
+
+            builderQuestions = [];
+            for (let i = 1; i <= count; i++) {
+                builderQuestions.push({
+                    title: `Fråga ${i} om ${topic}`,
+                    text: `AI-genererad fråga ${i}: Vad är viktigt att känna till angående ${topic} inom ${subject}?`,
+                    options: [
+                        {val:'a', text:`Korrekt grundprincip för ${topic}`, correct:true},
+                        {val:'b', text:`Felaktigt påstående A`, correct:false},
+                        {val:'c', text:`Felaktigt påstående B`, correct:false},
+                        {val:'d', text:`Felaktigt påstående C`, correct:false}
+                    ]
+                });
+            }
+
+            renderBuilderQuestions();
+            alert(`AI har skapat ${count} nya frågor om ${topic}!`);
+        }
+
+        function saveCustomExam() {
+            const title = document.getElementById('new-exam-title').value.trim();
+            const subject = document.getElementById('new-exam-subject').value.trim();
+            const classCode = document.getElementById('new-exam-class').value.trim() || currentClassCode;
+            const publishToClass = document.getElementById('new-exam-publish-class').checked;
+            
+            if (!title) return alert("Ange en titel för provet.");
+            
+            const key = `custom_${Date.now()}`;
+            const newExam = { title, subject: subject || "Eget", classCode, questions: builderQuestions };
+            
+            customExams[key] = newExam;
+            localStorage.setItem('portal_custom_exams', JSON.stringify(customExams));
+
+            if (publishToClass) {
+                classAssignedExams[key] = newExam;
+                localStorage.setItem('portal_class_assigned', JSON.stringify(classAssignedExams));
+                alert("Provet sparades och publicerades direkt till Klassens Prov!");
+                switchTab('class-category');
+            } else {
+                alert("Provet sparades till Egna & Gamla Prov!");
+                switchTab('my-exams');
+            }
+        }
+
+        // --- KAHOOT LIVE SPELARENA FUNKTIONER ---
+        function hostKahootGame() {
+            activeGameExamKey = document.getElementById('select-game-exam').value;
+            const code = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('view-dashboard').style.display = 'none';
+            document.getElementById('view-game-arena').style.display = 'block';
+            document.getElementById('active-game-code-lbl').innerText = code;
+            document.getElementById('lobby-code-big').innerText = code;
+            document.getElementById('game-lobby-box').style.display = 'flex';
+            document.getElementById('game-play-box').style.display = 'none';
+        }
+
+        function joinKahootWithCode() {
+            const code = document.getElementById('join-game-code').value.trim();
+            if (!code) return alert("Ange en giltig spelkod.");
+            activeGameExamKey = document.getElementById('select-game-exam').value;
+            document.getElementById('view-dashboard').style.display = 'none';
+            document.getElementById('view-game-arena').style.display = 'block';
+            document.getElementById('active-game-code-lbl').innerText = code;
+            document.getElementById('lobby-code-big').innerText = code;
+            document.getElementById('game-lobby-box').style.display = 'flex';
+            document.getElementById('game-play-box').style.display = 'none';
+        }
+
+        function startKahootGamePlay() {
+            document.getElementById('game-lobby-box').style.display = 'none';
+            document.getElementById('game-play-box').style.display = 'flex';
+            kahootQIdx = 0; kahootScore = 0;
+            renderKahootQuestion();
+        }
+
+        function renderKahootQuestion() {
+            const allExams = { ...defaultExams, ...classAssignedExams, ...customExams };
+            let examSource = allExams[activeGameExamKey] || defaultExams.elektricitet;
+            
+            if (kahootQIdx >= examSource.questions.length) {
+                if (kahootTimerInterval) clearInterval(kahootTimerInterval);
+                currentCoins += Math.round(kahootScore / 50); 
+                localStorage.setItem('portal_coins', currentCoins);
+                document.getElementById('user-coins-display').innerText = `🪙 ${currentCoins} mynt`;
+                
+                let avF = currentAvatar.startsWith('data:image') || currentAvatar.startsWith('http') ? currentAvatar : currentAvatar;
+                gameScoresList.unshift({ user: currentUser, avatar: avF, examTitle: examSource.title, score: kahootScore });
+                localStorage.setItem('portal_game_scores', JSON.stringify(gameScoresList));
+
+                alert(`Kahoot avslutat! Du fick totalt ${kahootScore} poäng.`);
+                showDashboard();
+                return;
+            }
+
+            document.getElementById('kahoot-top-banner').style.display = 'none';
+            document.getElementById('kahoot-header-info').style.display = 'flex';
+            document.getElementById('kahoot-question-container').style.display = 'block';
+
+            const q = examSource.questions[kahootQIdx];
+            shuffledCurrentOptions = q.options ? shuffleArray(q.options) : [];
+
+            document.getElementById('kahoot-q-counter').innerText = `Fråga ${kahootQIdx + 1} av ${examSource.questions.length}`;
+            document.getElementById('kahoot-score-display').innerText = `Poäng: ${kahootScore}`;
+            document.getElementById('kahoot-q-title').innerText = q.text || q.title;
+
+            kahootTimer = 20;
+            document.getElementById('kahoot-timer-display').innerText = kahootTimer;
+            if (kahootTimerInterval) clearInterval(kahootTimerInterval);
+            
+            kahootTimerInterval = setInterval(() => {
+                kahootTimer--;
+                document.getElementById('kahoot-timer-display').innerText = kahootTimer;
+                if (kahootTimer <= 0) {
+                    clearInterval(kahootTimerInterval);
+                    handleKahootAnswer(false, 0);
+                }
+            }, 1000);
+
+            const grid = document.getElementById('kahoot-options-grid');
+            grid.innerHTML = '';
+            
+            if (q.type === 'text') {
+                grid.innerHTML = `
+                    <div style="grid-column: span 2; display:flex; flex-direction:column; gap:12px;">
+                        <textarea id="kahoot-text-input" class="form-input" rows="3" placeholder="Skriv ditt svar här..."></textarea>
+                        <button class="btn-primary" style="background:#1368ce; color:white;" onclick="submitKahootTextAnswer()">Skicka in svar</button>
+                    </div>
+                `;
+            } else {
+                const shapes = ['🟥', '🟦', '🟨', '🟩'];
+                shuffledCurrentOptions.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `kahoot-btn-${idx % 4}`;
+                    btn.innerHTML = `<span>${shapes[idx % 4]}</span> ${opt.text}`;
+                    btn.onclick = () => {
+                        clearInterval(kahootTimerInterval);
+                        const isCorrect = opt.correct;
+                        const earned = isCorrect ? (kahootTimer * 50 + 500) : 0;
+                        handleKahootAnswer(isCorrect, earned);
+                    };
+                    grid.appendChild(btn);
+                });
+            }
+        }
+
+        function handleKahootAnswer(isCorrect, earned) {
+            if (isCorrect) {
+                kahootScore += earned;
+            }
+
+            let liveRanking = [...classMembers.map(m => {
+                let av = m.avatar && (m.avatar.startsWith('data:image') || m.avatar.startsWith('http')) ? 
+                    `<img src="${m.avatar}" style="width:22px; height:22px; border-radius:50%; object-fit:cover; vertical-align:middle;">` : (m.avatar || '👤');
+                return {
+                    name: m.name,
+                    avatar: av,
+                    score: m.email === currentEmail ? kahootScore : Math.floor(Math.random() * 2500) + kahootScore
+                };
+            })];
+            liveRanking.sort((a, b) => b.score - a.score);
+
+            document.getElementById('banner-feedback-title').innerText = isCorrect ? `🎉 Rätt svar! (+${earned} p)` : `❌ Fel svar!`;
+            
+            let listHtml = `<div style="font-size:0.9rem; font-weight:700; opacity:0.8; margin-bottom:8px;">🏆 Poängställning efter fråga ${kahootQIdx + 1}:</div>`;
+            liveRanking.slice(0, 4).forEach((p, idx) => {
+                const isMe = p.name === currentUser;
+                const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
+                listHtml += `
+                    <div class="kahoot-lb-card ${isMe ? 'highlight' : ''}">
+                        <span>${medal} ${p.avatar} ${p.name} ${isMe ? '(Du)' : ''}</span>
+                        <strong>${p.score} poäng</strong>
+                    </div>
+                `;
+            });
+
+            document.getElementById('banner-leaderboard-list').innerHTML = listHtml;
+            document.getElementById('kahoot-top-banner').style.display = 'block';
+
+            document.getElementById('kahoot-header-info').style.display = 'none';
+            document.getElementById('kahoot-question-container').style.display = 'none';
+            document.getElementById('kahoot-options-grid').innerHTML = '';
+        }
+
+        function proceedAfterBannerClick() {
+            kahootQIdx++;
+            renderKahootQuestion();
+        }
+
+        function submitKahootTextAnswer() {
+            const val = document.getElementById('kahoot-text-input').value.trim();
+            if (val.length < 3) {
+                alert("Skriv ett lite längre svar.");
+                return;
+            }
+            clearInterval(kahootTimerInterval);
+            const earned = kahootTimer * 50 + 600;
+            handleKahootAnswer(true, earned);
+        }
+
+        function renderResultsList() {
+            const list = document.getElementById('results-history-list');
+            list.innerHTML = examResults.length === 0 ? '<div class="empty-text">Inga genomförda prov ännu.</div>' : '';
+            examResults.forEach(r => {
+                let av = r.avatar && (r.avatar.startsWith('data:image') || r.avatar.startsWith('http')) ? 
+                    `<img src="${r.avatar}" style="width:28px; height:28px; border-radius:50%; object-fit:cover; vertical-align:middle;">` : (r.avatar || '👤');
+                list.innerHTML += `<div class="exam-card" style="flex-direction:row; justify-content:space-between; align-items:center;">
+                    <div><h3 style="color:var(--brand-dark-green);">${av} ${r.examTitle}</h3><p style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">${r.date} • ${r.score}</p></div>
+                    <span style="font-size:1.6rem; font-weight:800; color:var(--brand-dark-green);">${r.grade}</span>
+                </div>`;
+            });
+        }
+
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard-container');
+            container.innerHTML = examResults.length === 0 ? '<div class="empty-text">Inga resultat på topplistan än.</div>' : 
+                `<table class="leaderboard-table"><tr><th>Plac</th><th>Elev</th><th>Prov</th><th>Procent</th><th>Betyg</th></tr>` +
+                examResults.map((r, i) => {
+                    let av = r.avatar && (r.avatar.startsWith('data:image') || r.avatar.startsWith('http')) ? 
+                        `<img src="${r.avatar}" style="width:24px; height:24px; border-radius:50%; object-fit:cover; vertical-align:middle;">` : (r.avatar || '👤');
+                    return `<tr><td>#${i+1}</td><td>${av} ${r.user}</td><td>${r.examTitle}</td><td>${r.percent}%</td><td><strong>${r.grade}</strong></td></tr>`;
+                }).join('') + `</table>`;
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settings-username').value = currentUser;
+            document.getElementById('settings-email').value = currentEmail;
+            document.getElementById('settings-classcode').value = currentClassCode;
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        function closeSettingsModal() { document.getElementById('settings-modal').style.display = 'none'; }
+
+        function selectAvatar(emoji, el) {
+            currentAvatar = emoji;
+            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentAvatar = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function changeTheme(theme) {
+            if (theme === 'default') document.body.removeAttribute('data-theme');
+            else document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('portal_theme', theme);
+        }
+
+        function saveSettings() {
+            currentUser = document.getElementById('settings-username').value.trim() || currentUser;
+            currentEmail = document.getElementById('settings-email').value.trim() || currentEmail;
+            currentClassCode = document.getElementById('settings-classcode').value.trim() || currentClassCode;
+            
+            const mem = classMembers.find(m => m.email === currentEmail);
+            if (mem) {
+                mem.name = currentUser;
+                mem.classCode = currentClassCode;
+                mem.avatar = currentAvatar;
+                localStorage.setItem('portal_class_members', JSON.stringify(classMembers));
+            }
+
+            localStorage.setItem('portal_user', currentUser);
+            localStorage.setItem('portal_email', currentEmail);
+            localStorage.setItem('portal_classcode', currentClassCode);
+            localStorage.setItem('portal_avatar', currentAvatar);
+            showDashboard();
+            closeSettingsModal();
+        }
+    </script>
 </body>
 </html>
