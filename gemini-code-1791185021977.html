@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provportal & Kahoot Live</title>
+    <style>
+        :root {
+            --kahoot-purple: #46178f;
+            --kahoot-blue: #1368ce;
+            --kahoot-red: #e21b3c;
+            --kahoot-yellow: #d89e00;
+            --kahoot-green: #26890c;
+            --bg-light: #f4f7f6;
+        }
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--kahoot-purple);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: #ffffff;
+            color: #333333;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1, h2 {
+            color: var(--kahoot-purple);
+            text-align: center;
+        }
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* Dashboard Grid för de 6 grundproven */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .quiz-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .quiz-card:hover {
+            border-color: var(--kahoot-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .quiz-card h3 {
+            margin-top: 0;
+            color: var(--kahoot-blue);
+        }
+
+        /* Kahoot Style Buttons */
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .choice-btn {
+            padding: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: filter 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .choice-btn:hover { filter: brightness(1.1); }
+        .choice-0 { background-color: var(--kahoot-red); }
+        .choice-1 { background-color: var(--kahoot-blue); }
+        .choice-2 { background-color: var(--kahoot-yellow); }
+        .choice-3 { background-color: var(--kahoot-green); }
+
+        .btn {
+            background-color: var(--kahoot-blue);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+        .btn:hover { filter: brightness(1.1); }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .question-box {
+            background: #f2f2f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #222;
+        }
+        .class-section {
+            background: #eef2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- PORTAL DASHBOARD (Startskärm med 6 grundprov & Klass) -->
+    <div id="portalScreen" class="screen active">
+        <h1>Provportal & Kahoot Live</h1>
+        <p style="text-align: center; color: #666;">Välj ett av de 6 grundproven nedan eller gå till din klassfunktion!</p>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="studentName" style="font-weight: bold;">Ditt namn:</label>
+            <input type="text" id="studentName" placeholder="Skriv ditt namn här...">
+        </div>
+
+        <h2>De 6 Grundproven</h2>
+        <div class="portal-grid">
+            <div class="quiz-card" onclick="startSelectedQuiz(0)">
+                <h3>1. Fysik</h3>
+                <p>Elektricitet & Magnetism</p>
+            </div>
+            <div class="quiz-card" onclick="startSelectedQuiz(1)">
+                <h3>2. Kemi</h3>
+                <p>Atomer, molekyler & periodiska systemet</p>
+            </div>
+            <div class="quiz-card" onclick="startSelectedQuiz(2)">
+                <h3>3. Biologi</h3>
+                <p>Ekologi & evolution</p>
+            </div>
+            <div class="quiz-card" onclick="startSelectedQuiz(3)">
+                <h3>4. Matematik</h3>
+                <p>Algebra & procent</p>
+            </div>
+            <div class="quiz-card" onclick="startSelectedQuiz(4)">
+                <h3>5. Historia</h3>
+                <p>Världskrig och samhällsförändringar</p>
+            </div>
+            <div class="quiz-card" onclick="startSelectedQuiz(5)">
+                <h3>6. Geografi</h3>
+                <p>Världsdelar, klimat & naturresurser</p>
+            </div>
+        </div>
+
+        <div class="class-section">
+            <h3>Klassfunktion & Egna Prov</h3>
+            <p style="font-size: 14px; color: #555;">Här kan lärare eller elever hantera klassens egna skapade prov.</p>
+            <button class="btn" style="background-color: var(--kahoot-green);" onclick="openClassView()">Gå till Min Klass</button>
+        </div>
+    </div>
+
+    <!-- CLASS SCREEN -->
+    <div id="classScreen" class="screen">
+        <h2>Min Klass & Statistik</h2>
+        <p>Här visas aktiva elever och sparade resultat för er klass.</p>
+        <ul id="classList" style="color: #333; background: #f9f9f9; padding: 20px; border-radius: 8px;">
+            <li>Inga sparade resultat än. Gör ett prov för att registrera poäng!</li>
+        </ul>
+        <button class="btn" style="background-color: #666;" onclick="backToPortal()">Tillbaka till portalen</button>
+    </div>
+
+    <!-- QUIZ SCREEN (Kahoot-stil) -->
+    <div id="quizScreen" class="screen">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold; color: #666;">
+            <span id="questionCounter">Fråga 1</span>
+            <span id="scoreTracker">Poäng: 0</span>
+        </div>
+        <div id="questionContainer"></div>
+        <button class="btn" style="background-color: #e21b3c; margin-top: 20px;" onclick="backToPortal()">Avbryt prov</button>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="resultScreen" class="screen">
+        <h1>Provresultat! 🎉</h1>
+        <div id="resultSummary" style="background: #e8f8f5; border: 2px solid var(--kahoot-green); padding: 20px; border-radius: 8px; color: #333; margin-top: 20px;"></div>
+        <button class="btn" onclick="backToPortal()">Tillbaka till portalen</button>
+    </div>
+</div>
+
+<script>
+// Databas med 6 grundprov
+const quizzes = [
+    // 1. Fysik
+    [
+        { q: "Vad händer om du för samman nordpol på två magneter?", choices: ["De attraherar", "De repellerar", "Ingenting"], correct: 1 },
+        { q: "Vad kallas en spole med järnkärna och ström?", choices: ["Transformator", "Elektromagnet", "Generator"], correct: 1 },
+        { q: "Vad omvandlar en elmotor?", choices: ["Rörelse till el", "El till rörelse", "Värme till el"], correct: 1 }
+    ],
+    // 2. Kemi
+    [
+        { q: "Vad heter atomens centrala del?", choices: ["Elektron", "Kärna", "Skal"], correct: 1 },
+        { q: "Vilken kemisk beteckning har vatten?", choices: ["CO2", "H2O", "O2"], correct: 1 },
+        { q: "Vad kallas ämnen med pH under 7?", choices: ["Baser", "Syror", "Neutrala"], correct: 1 }
+    ],
+    // 3. Biologi
+    [
+        { q: "Vad heter växternas process för att tillverka näring?", choices: ["Fotosyntes", "Respiration", "Fermentering"], correct: 0 },
+        { q: "Vilket organ pumpa blodet i kroppen?", choices: ["Lungorna", "Hjärtat", "Levern"], correct: 1 },
+        { q: "Vad kallas levande varelsers samspel i ett område?", choices: ["Ekosystem", "Atmosfär", "Geosfär"], correct: 0 }
+    ],
+    // 4. Matematik
+    [
+        { q: "Vad är 7 * 8?", choices: ["54", "56", "64"], correct: 1 },
+        { q: "Hur mycket är 25% av 200?", choices: ["25", "50", "75"], correct: 1 },
+        { q: "Vad är arean på en rektangel med sidorna 4 cm och 5 cm?", choices: ["9 cm²", "20 cm²", "18 cm²"], correct: 1 }
+    ],
+    // 5. Historia
+    [
+        { q: "När slutade det andra världskriget?", choices: ["1942", "1945", "1950"], correct: 1 },
+        { q: "Vem upptäckte Amerika (enligt traditionell historieskrivning)?", choices: ["Vasco da Gama", "Kristofer Columbus", "Leif Eriksson"], correct: 1 },
+        { q: "Vad kallas tidsperioden före medeltiden i Europa?", choices: ["Antiken", "Renässansen", "Industrialismen"], correct: 0 }
+    ],
+    // 6. Geografi
+    [
+        { q: "Vilken är världens största ocean?", choices: ["Atlanten", "Stilla havet", "Indiska oceanen"], correct: 1 },
+        { q: "Vilket land har flest invånare?", choices: ["USA", "Indien / Kina", "Brasilien"], correct: 1 },
+        { q: "Vad heter Sveriges längsta flod (eller största sjö)?", choices: ["Vänern", "Torne älv", "Mälaren"], correct: 0 }
+    ]
+];
+
+let currentQuiz = [];
+let currentIdx = 0;
+let score = 0;
+let studentName = "";
+let classResults = [];
+
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+}
+
+function startSelectedQuiz(quizIndex) {
+    const nameInput = document.getElementById("studentName").value.trim();
+    if (!nameInput) {
+        alert("Vänligen skriv in ditt namn först!");
+        return;
+    }
+    studentName = nameInput;
+    currentQuiz = quizzes[quizIndex];
+    currentIdx = 0;
+    score = 0;
+    showScreen('quizScreen');
+    loadQuestion();
+}
+
+function loadQuestion() {
+    if (currentIdx >= currentQuiz.length) {
+        showResults();
+        return;
+    }
+
+    const q = currentQuiz[currentIdx];
+    document.getElementById("questionCounter").innerText = `Fråga ${currentIdx + 1} av ${currentQuiz.length}`;
+    document.getElementById("scoreTracker").innerText = `Poäng: ${score}`;
+
+    const container = document.getElementById("questionContainer");
+    let html = `<div class="question-box">${q.q}</div><div class="choices-grid">`;
+    q.choices.forEach((choice, index) => {
+        html += `<button class="choice-btn choice-${index}" onclick="answerQuestion(${index})">${String.fromCharCode(65 + index)}: ${choice}</button>`;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+function answerQuestion(selectedIndex) {
+    const q = currentQuiz[currentIdx];
+    if (selectedIndex === q.correct) {
+        score++;
+    }
+    currentIdx++;
+    loadQuestion();
+}
+
+function showResults() {
+    showScreen('resultScreen');
+    const total = currentQuiz.length;
+    let summaryText = `<strong>Elev:</strong> ${studentName}<br><strong>Resultat:</strong> ${score} av ${total} poäng.`;
+    document.getElementById("resultSummary").innerHTML = summaryText;
+
+    // Spara till klasslistan
+    classResults.push({ name: studentName, score: score, total: total });
+}
+
+function openClassView() {
+    showScreen('classScreen');
+    const list = document.getElementById("classList");
+    if (classResults.length === 0) {
+        list.innerHTML = "<li>Inga provresultat registrerade än under denna session.</li>";
+    } else {
+        let html = "";
+        classResults.forEach(res => {
+            html += `<li><strong>${res.name}:</strong> ${res.score} / ${res.total} poäng</li>`;
+        });
+        list.innerHTML = html;
+    }
+}
+
+function backToPortal() {
+    showScreen('portalScreen');
+}
+</script>
+
+</body>
+</html>
